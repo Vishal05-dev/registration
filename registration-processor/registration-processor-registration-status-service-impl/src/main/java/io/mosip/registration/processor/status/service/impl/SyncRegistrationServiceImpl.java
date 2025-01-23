@@ -474,7 +474,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	 * @return true, if successful
 	 */
 	private boolean validateLanguageCode(SyncRegistrationDto registrationDto, List<SyncResponseDto> syncResponseList) {
-		if (registrationDto.getLangCode().length() == LANCODE_LENGTH) {
+		if (registrationDto.getLangCode().length() <= LANCODE_LENGTH) {
 			return true;
 		} else {
 			SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
