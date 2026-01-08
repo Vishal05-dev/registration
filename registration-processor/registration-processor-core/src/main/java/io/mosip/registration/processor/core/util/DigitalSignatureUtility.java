@@ -43,6 +43,7 @@ public class DigitalSignatureUtility {
 	private static final String REG_PROC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 
 	public String getDigitalSignature(String data) {
+		long startTime = System.currentTimeMillis();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"DigitalSignatureUtility::getDigitalSignature()::entry");
 
@@ -72,7 +73,8 @@ public class DigitalSignatureUtility {
 			
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 					"DigitalSignatureUtility::getDigitalSignature()::exit");
-
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"(syncV2) Time taken to digitally sign the response " + (System.currentTimeMillis() - startTime) + " (ms)");
 			return signResponseDto.getSignature();
 		} catch (ApisResourceAccessException | IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",

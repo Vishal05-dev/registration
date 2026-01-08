@@ -181,6 +181,7 @@ public class PacketValidateProcessor {
 		PacketValidationDto packetValidationDto = new PacketValidationDto();
 		String registrationId = null;
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
+		long startTime = System.currentTimeMillis();
 		try {
 			registrationStatusDto
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
@@ -200,14 +201,26 @@ public class PacketValidateProcessor {
 			registrationStatusDto.setRegistrationStageName(stageName);
 			boolean isValidSupervisorStatus = isValidSupervisorStatus(object);
 			if (isValidSupervisorStatus) {
+				long validateStartTime = System.currentTimeMillis();
 				Boolean isValid = compositePacketValidator.validate(object.getRid(),
 						registrationStatusDto.getRegistrationType(), packetValidationDto);
-
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+						"Time taken to complete validation for rid - " + object.getRid() + " - " + (System.currentTimeMillis() - validateStartTime) + " (ms)");
 				if (isValid) {
 					// save audit details
 					InternalRegistrationStatusDto finalRegistrationStatusDto = registrationStatusDto;
 					String finalRegistrationId = registrationId;
-					Runnable r = () -> {
+					try {
+						auditUtility.saveAuditDetails(finalRegistrationId,
+								finalRegistrationStatusDto.getRegistrationType());
+					} catch (Exception e) {
+						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(),
+								description.getCode() + " Inside Runnable ", "");
+
+					}
+/*					Runnable r = () -> {
 						try {
 							auditUtility.saveAuditDetails(finalRegistrationId,
 									finalRegistrationStatusDto.getRegistrationType());
@@ -220,7 +233,7 @@ public class PacketValidateProcessor {
 					};
 					ExecutorService es = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 					es.submit(r);
-					es.shutdown();
+					es.shutdown();*/
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 					object.setIsValid(Boolean.TRUE);
@@ -449,6 +462,9 @@ public class PacketValidateProcessor {
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					moduleId, moduleName, registrationId);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+					"Time taken to complete overall steps - " + object.getRid() + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 		}
 
 		return object;

@@ -73,6 +73,7 @@ public class BiometricsSignatureValidator {
 		}
 
 		List<BIR> birs = biometricRecord.getSegments();
+
 		for (BIR bir : birs) {
 			HashMap<String, String> othersInfo = bir.getOthers();
 			if (othersInfo == null) {
@@ -134,7 +135,6 @@ public class BiometricsSignatureValidator {
 		jwtSignatureVerifyRequestDto.setValidateTrust(false);
 		jwtSignatureVerifyRequestDto.setDomain("Device");
 		RequestWrapper<JWTSignatureVerifyRequestDto> request = new RequestWrapper<>();
-
 		request.setRequest(jwtSignatureVerifyRequestDto);
 		request.setVersion("1.0");
 		DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));

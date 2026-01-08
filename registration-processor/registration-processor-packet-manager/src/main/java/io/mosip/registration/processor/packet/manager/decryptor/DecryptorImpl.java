@@ -119,8 +119,12 @@ public class DecryptorImpl implements Decryptor {
 			request.setRequesttime(localdatetime);
 			request.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
 			CryptomanagerResponseDto response;
+			long startTime = System.currentTimeMillis();
 			response = (CryptomanagerResponseDto) restClientService.postApi(ApiName.CRYPTOMANAGERDECRYPT, "", "",
 					request, CryptomanagerResponseDto.class);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), id,
+					"Time taken to decrypt the file " + refId + " " + (System.currentTimeMillis() - startTime) + " (ms)");
 			if (response.getErrors() != null && !response.getErrors().isEmpty()) {
 				ServiceError error = response.getErrors().get(0);
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),

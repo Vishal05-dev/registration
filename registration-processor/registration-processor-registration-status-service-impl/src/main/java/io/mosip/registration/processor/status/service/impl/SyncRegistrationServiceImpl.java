@@ -236,6 +236,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 
 	public List<SyncResponseDto> syncV2(List<SyncRegistrationDto> resgistrationDtos, String referenceId,
 										String timeStamp) {
+		long startTime = System.currentTimeMillis();
 		List<SyncResponseDto> syncResponseList = new ArrayList<>();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"SyncRegistrationServiceImpl::sync()::entry");
@@ -291,6 +292,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"SyncRegistrationServiceImpl::sync()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"(syncV2) Time taken to sync into table " + (System.currentTimeMillis() - startTime) + " (ms)");
 		return syncResponseList;
 
 	}
@@ -712,6 +715,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	@Override
 	public RegistrationSyncRequestDTO decryptAndGetSyncRequest(Object encryptedSyncMetaInfo, String referenceId,
 			String timeStamp, List<SyncResponseDto> syncResponseList) {
+		long startTime = System.currentTimeMillis();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"SyncRegistrationServiceImpl::decryptAndGetSyncRequest()::entry");
 
@@ -761,7 +765,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"SyncRegistrationServiceImpl::decryptAndGetSyncRequest()::exit");
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"(syncV2) Time taken to decrypt sync request " + (System.currentTimeMillis() - startTime) + " (ms)");
 		return registrationSyncRequestDTO;
 	}
 

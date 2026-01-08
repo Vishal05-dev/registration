@@ -254,6 +254,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 				demographicIdentity.put(MappingJsonConstants.IDSCHEMA_VERSION, convertIdschemaToDouble ? Double.valueOf(schemaVersion) : schemaVersion);
 
 				loadDemographicIdentity(fieldMap, demographicIdentity);
+				regProcLogger.info("DemographicIdentity - " + registrationId + " - " + demographicIdentity.toString());
 
 				if (StringUtils.isEmpty(uinField) || uinField.equalsIgnoreCase("null") ) {
 

@@ -106,7 +106,7 @@ public class CMDValidationProcessor {
 	private List<String> deviceValidationProcessList ;
 
 	public MessageDTO process(MessageDTO object, String stageName) {
-
+		long startTime = System.currentTimeMillis();
 		LogDescription description = new LogDescription();
 		boolean isTransactionSuccessful = false;
 		String registrationId = "";
@@ -123,9 +123,12 @@ public class CMDValidationProcessor {
 		registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.CMD_VALIDATION.toString());
 		registrationStatusDto.setRegistrationStageName(stageName);
 		try {
-
+			long metaStartTime = System.currentTimeMillis();
 			Map<String, String> metaInfo = packetManagerService.getMetaInfo(registrationId,
 					registrationStatusDto.getRegistrationType(), ProviderStageName.CMD_VALIDATOR);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), "CMDValidatorStage",
+					"Time taken to get metainfo - " + object.getRid() + " - " + (System.currentTimeMillis() - metaStartTime) + " (ms)");
 
 			RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(metaInfo);
 
@@ -155,16 +158,28 @@ public class CMDValidationProcessor {
 			}
 
 			if (centerValidationProcessList !=null && !centerValidationProcessList.isEmpty() && centerValidationProcessList.contains(registrationStatusDto.getRegistrationType())) {
+				long centerStartTime = System.currentTimeMillis();
 				centerValidator.validate(getLanguageCode(), regOsi, registrationStatusDto.getRegistrationId());
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "CMDValidatorStage",
+						"Time taken to validate center - " + object.getRid() + " - " + (System.currentTimeMillis() - centerStartTime) + " (ms)");
 			}
 
 			if (machineValidationProcessList !=null && ! machineValidationProcessList.isEmpty() && machineValidationProcessList.contains(registrationStatusDto.getRegistrationType())) {
+				long machineStartTime = System.currentTimeMillis();
 				machineValidator.validate(regOsi.getMachineId(), getLanguageCode(), regOsi.getPacketCreationDate(),
 						registrationStatusDto.getRegistrationId());
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "CMDValidatorStage",
+						"Time taken to validate machine - " + object.getRid() + " - " + (System.currentTimeMillis() - machineStartTime) + " (ms)");
 			}
 
 			if (deviceValidationProcessList !=null && !deviceValidationProcessList.isEmpty() && deviceValidationProcessList.contains(registrationStatusDto.getRegistrationType())) {
+				long deviceStartTime = System.currentTimeMillis();
 				deviceValidator.validate(regOsi,registrationStatusDto.getRegistrationType(), registrationStatusDto.getRegistrationId());
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "CMDValidatorStage",
+						"Time taken to validate device - " + object.getRid() + " - " + (System.currentTimeMillis() - deviceStartTime) + " (ms)");
 			}
 
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
@@ -240,6 +255,9 @@ public class CMDValidationProcessor {
 			String moduleName = ModuleName.CMD_VALIDATOR.toString();
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto, moduleId, moduleName);
 			updateAudit(description, isTransactionSuccessful, moduleId, moduleName, registrationId);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), "CMDValidatorStage",
+					"Time taken to complete overall steps - " + object.getRid() + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 		}
 		return object;
 	}

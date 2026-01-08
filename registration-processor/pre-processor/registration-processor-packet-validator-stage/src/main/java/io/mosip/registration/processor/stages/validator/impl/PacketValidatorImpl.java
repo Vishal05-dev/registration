@@ -82,8 +82,13 @@ public class PacketValidatorImpl implements PacketValidator {
 			JsonProcessingException, PacketManagerException {
 		String uin = null;
 		try {
+			long startTime = System.currentTimeMillis();
 			ValidatePacketResponse response = packetManagerService.validate(id, process,
 					ProviderStageName.PACKET_VALIDATOR);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+					"Time taken for PacketValidatorImpl.validate validate API for rid - " + id + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
+
 			if (!response.isValid()) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), id,
@@ -96,6 +101,7 @@ public class PacketValidatorImpl implements PacketValidator {
 			}
 			
 			//Check consent
+			startTime = System.currentTimeMillis();
 			if(!checkConsentForPacket(id,process,ProviderStageName.PACKET_VALIDATOR))
 			{
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -107,7 +113,9 @@ public class PacketValidatorImpl implements PacketValidator {
 						.setPacketValidaionFailureMessage(StatusUtil.PACKET_CONSENT_VALIDATION.getMessage());
 				return false;
 			}
-			
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+					"Time taken for PacketValidatorImpl.validate Check consent for rid - " + id + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 			
 
 			if (process.equalsIgnoreCase(RegistrationType.UPDATE.toString())
@@ -138,12 +146,16 @@ public class PacketValidatorImpl implements PacketValidator {
 			}
 
 			// document validation
+			startTime = System.currentTimeMillis();
 			if (!applicantDocumentValidation(id, process, packetValidationDto)) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), id,
 						"ERROR =======>" + StatusUtil.APPLICANT_DOCUMENT_VALIDATION_FAILED.getMessage());
 				return false;
 			}
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+					"Time taken for PacketValidatorImpl.validate document validation for rid - " + id + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 
 			// check if uin is in idrepisitory
 			if (RegistrationType.UPDATE.name().equalsIgnoreCase(process)
@@ -159,9 +171,13 @@ public class PacketValidatorImpl implements PacketValidator {
 				}
 			}
 
+			startTime = System.currentTimeMillis();
 			if (!biometricsXSDValidation(id, process, packetValidationDto)) {
 				return false;
 			}
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+					"Time taken for PacketValidatorImpl.validate xsd validation for rid - " + id + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 		} catch (PacketManagerException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, RegistrationStatusCode.FAILED.toString() + e.getMessage() + ExceptionUtils.getStackTrace(e));

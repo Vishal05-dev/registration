@@ -420,9 +420,16 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
                     if (source.getKey().endsWith(ZIP)) {
                         InputStream decryptedData = decryptor
                                 .decrypt(id, utility.getRefId(id, refId), source.getValue());
+                        long startTime = System.currentTimeMillis();
                         isInputFileClean = virusScannerService.scanFile(decryptedData);
-                    } else
+                        regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+                                LoggerFileConstant.REGISTRATIONID.toString(), id, "Time taken to scan ZIP file " + (System.currentTimeMillis() - startTime) + " (ms)");
+                    } else {
+                        long startTime = System.currentTimeMillis();
                         isInputFileClean = virusScannerService.scanFile(source.getValue());
+                        regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+                                LoggerFileConstant.REGISTRATIONID.toString(), id, "Time taken to scan JSON file " + (System.currentTimeMillis() - startTime) + " (ms)");
+                    }
                     if (!isInputFileClean)
                         break;
                 }
@@ -611,10 +618,12 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
             String source = tempKeys[0];
             String process = tempKeys[1];
             String objectName = tempKeys[2];
+            long startTime = System.currentTimeMillis();
             AdditionalInfoRequestDto additionalInfoRequestDto = additionalInfoRequestService
                 .getAdditionalInfoRequestByRegIdAndProcessAndIteration(messageDTO.getRid(),
                         messageDTO.getReg_type(), messageDTO.getIteration());
-
+            regProcLogger.info("Time to taken to get final key " + (System.currentTimeMillis() - startTime) + " (ms) "
+                    + packetKey + " id : " + messageDTO.getRid());
             if (additionalInfoRequestDto != null &&
                         additionalInfoRequestDto.getAdditionalInfoReqId().equals(regEntity.getAdditionalInfoReqId())) {
                 return source + FORWARD_SLASH + process + "-" + messageDTO.getIteration() + FORWARD_SLASH + objectName;

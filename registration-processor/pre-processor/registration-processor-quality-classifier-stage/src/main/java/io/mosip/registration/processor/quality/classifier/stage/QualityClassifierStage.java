@@ -224,8 +224,11 @@ public class QualityClassifierStage extends MosipVerticleAPIManager {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
 				"QualityCheckerStage::process()::entry");
 
+		long startTime = System.currentTimeMillis();
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(regId,
 				object.getReg_type(), object.getIteration(), object.getWorkflowInstanceId());
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+				"QualityCheckerStage::Time taken to find rid info - " + (System.currentTimeMillis() - startTime) + " (ms)");
 
 		try {
 			String individualBiometricsObject = basedPacketManagerService.getFieldByMappingJsonKey(regId,
@@ -245,10 +248,12 @@ public class QualityClassifierStage extends MosipVerticleAPIManager {
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
 						"Individual Biometric parameter is not present in ID Json");
 			} else {
+				startTime = System.currentTimeMillis();
 				BiometricRecord biometricRecord = basedPacketManagerService.getBiometricsByMappingJsonKey(regId,
 						MappingJsonConstants.INDIVIDUAL_BIOMETRICS, registrationStatusDto.getRegistrationType(),
 						ProviderStageName.QUALITY_CHECKER);
-
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+						"QualityCheckerStage::Time taken to get biometric info - " + (System.currentTimeMillis() - startTime) + " (ms)");
 				if (biometricRecord == null || CollectionUtils.isEmpty(biometricRecord.getSegments())) {
 					biometricRecord = basedPacketManagerService.getBiometricsByMappingJsonKey(regId,
 							MappingJsonConstants.AUTHENTICATION_BIOMETRICS, registrationStatusDto.getRegistrationType(),
@@ -443,16 +448,18 @@ public class QualityClassifierStage extends MosipVerticleAPIManager {
 			BIR[] birArray = new BIR[1];
 			birArray[0] = bir;
 			if(!biometricType.name().equalsIgnoreCase(BiometricType.EXCEPTION_PHOTO.name())) {
-			float[] qualityScoreresponse = getBioSdkInstance(biometricType).getSegmentQuality(birArray, null);
+				long startTime = System.currentTimeMillis();
+				float[] qualityScoreresponse = getBioSdkInstance(biometricType).getSegmentQuality(birArray, null);
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), biometricType.name(),
+						"QualityCheckerStage::Time taken for check quality for " + biometricType.name() + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
+				float score = qualityScoreresponse[0];
+				String bioType = bir.getBdbInfo().getType().get(0).value();
 
-			float score = qualityScoreresponse[0];
-			String bioType = bir.getBdbInfo().getType().get(0).value();
+				// Check for entry
+				Float storedMinScore = bioTypeMinScoreMap.get(bioType);
 
-			// Check for entry
-			Float storedMinScore = bioTypeMinScoreMap.get(bioType);
-
-			bioTypeMinScoreMap.put(bioType,
-					storedMinScore == null ? score : storedMinScore > score ? score : storedMinScore);
+				bioTypeMinScoreMap.put(bioType,
+						storedMinScore == null ? score : storedMinScore > score ? score : storedMinScore);
 			}
 		}
 

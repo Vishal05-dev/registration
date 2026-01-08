@@ -77,7 +77,11 @@ public class PacketManagerService extends PriorityBasedPacketManagerService {
         request.setVersion(VERSION);
         request.setRequesttime(DateUtils.getUTCCurrentDateTime());
         request.setRequest(fieldDto);
+        long startTime = System.currentTimeMillis();
         ResponseWrapper<FieldResponseDto> response = (ResponseWrapper) restApi.postApi(ApiName.PACKETMANAGER_SEARCH_FIELD, "", "", request, ResponseWrapper.class);
+        regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+                LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+                "Time taken for PacketManagerService.getField SearchField API for rid - " + id + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 
         if (response.getErrors() != null && response.getErrors().size() > 0) {
             regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id, JsonUtils.javaObjectToJsonString(response));
@@ -104,7 +108,11 @@ public class PacketManagerService extends PriorityBasedPacketManagerService {
         request.setVersion(VERSION);
         request.setRequesttime(DateUtils.getUTCCurrentDateTime());
         request.setRequest(fieldDto);
+        long startTime = System.currentTimeMillis();
         ResponseWrapper<FieldResponseDto> response = (ResponseWrapper) restApi.postApi(ApiName.PACKETMANAGER_SEARCH_FIELDS, "", "", request, ResponseWrapper.class);
+        regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+                LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+                "Time taken for PacketManagerService.getFields SearchFields API for rid - " + id + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 
         if (response.getErrors() != null && response.getErrors().size() > 0) {
             regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id, JsonUtils.javaObjectToJsonString(response));
@@ -132,7 +140,11 @@ public class PacketManagerService extends PriorityBasedPacketManagerService {
         request.setVersion(VERSION);
         request.setRequesttime(DateUtils.getUTCCurrentDateTime());
         request.setRequest(fieldDto);
+        long startTime = System.currentTimeMillis();
         ResponseWrapper<Document> response = (ResponseWrapper) restApi.postApi(ApiName.PACKETMANAGER_SEARCH_DOCUMENT, "", "", request, ResponseWrapper.class);
+        regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+                LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+                "Time taken for PacketManagerService.getDocument SearchDocument API for rid - " + id + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 
         if (response.getErrors() != null && response.getErrors().size() > 0) {
             regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id, JsonUtils.javaObjectToJsonString(response));
@@ -156,7 +168,11 @@ public class PacketManagerService extends PriorityBasedPacketManagerService {
         request.setVersion(VERSION);
         request.setRequesttime(DateUtils.getUTCCurrentDateTime());
         request.setRequest(fieldDto);
+        long startTime = System.currentTimeMillis();
         ResponseWrapper<ValidatePacketResponse> response = (ResponseWrapper) restApi.postApi(ApiName.PACKETMANAGER_VALIDATE, "", "", request, ResponseWrapper.class);
+        regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+                LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+                "Time taken for PacketManagerService.validate validate API for rid - " + id + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 
         if (response.getErrors() != null && response.getErrors().size() > 0) {
             regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id, JsonUtils.javaObjectToJsonString(response));
@@ -181,7 +197,11 @@ public class PacketManagerService extends PriorityBasedPacketManagerService {
         request.setVersion(VERSION);
         request.setRequesttime(DateUtils.getUTCCurrentDateTime());
         request.setRequest(fieldDto);
+        long startTime = System.currentTimeMillis();
         ResponseWrapper<List<FieldResponseDto>> responseObj = (ResponseWrapper) restApi.postApi(ApiName.PACKETMANAGER_SEARCH_AUDITS, "", "", request, ResponseWrapper.class);
+        regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+                LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+                "Time taken for PacketManagerService.getAudits audit API for rid - " + id + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 
         if (responseObj.getErrors() != null && responseObj.getErrors().size() > 0) {
             regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id, JsonUtils.javaObjectToJsonString(responseObj));
@@ -209,7 +229,11 @@ public class PacketManagerService extends PriorityBasedPacketManagerService {
         request.setVersion(VERSION);
         request.setRequesttime(DateUtils.getUTCCurrentDateTime());
         request.setRequest(fieldDto);
+        long startTime = System.currentTimeMillis();
         ResponseWrapper<BiometricRecord> response = (ResponseWrapper) restApi.postApi(ApiName.PACKETMANAGER_SEARCH_BIOMETRICS, "", "", request, ResponseWrapper.class);
+        regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+                LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+                "Time taken for PacketManagerService.getBiometrics biometrics API for rid - " + id + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 
         if (response.getErrors() != null && response.getErrors().size() > 0) {
             regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id, JsonUtils.javaObjectToJsonString(response));
@@ -235,7 +259,11 @@ public class PacketManagerService extends PriorityBasedPacketManagerService {
         request.setVersion(VERSION);
         request.setRequesttime(DateUtils.getUTCCurrentDateTime());
         request.setRequest(fieldDto);
+        long startTime = System.currentTimeMillis();
         ResponseWrapper<FieldResponseDto> response = (ResponseWrapper) restApi.postApi(ApiName.PACKETMANAGER_SEARCH_METAINFO, "", "", request, ResponseWrapper.class);
+        regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+                LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+                "Time taken for PacketManagerService.getMetaInfo for rid - " + id + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 
         if (CollectionUtils.isNotEmpty(response.getErrors())) {
             regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -253,6 +281,7 @@ public class PacketManagerService extends PriorityBasedPacketManagerService {
     }
 
     protected InfoResponseDto info(String id) throws ApisResourceAccessException, PacketManagerException, JsonProcessingException, IOException {
+        long startTime = System.currentTimeMillis();
         InfoRequestDto infoRequestDto = new InfoRequestDto(id);
 
         RequestWrapper<InfoRequestDto> request = new RequestWrapper<>();
@@ -261,6 +290,9 @@ public class PacketManagerService extends PriorityBasedPacketManagerService {
         request.setRequesttime(DateUtils.getUTCCurrentDateTime());
         request.setRequest(infoRequestDto);
         ResponseWrapper<InfoResponseDto> response = (ResponseWrapper) restApi.postApi(ApiName.PACKETMANAGER_INFO, "", "", request, ResponseWrapper.class);
+        regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+                LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+                "Time taken for PacketManagerService.info for rid - " + id + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 
         if (response.getErrors() != null && response.getErrors().size() > 0) {
             regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id, JsonUtils.javaObjectToJsonString(response));
@@ -284,7 +316,11 @@ public class PacketManagerService extends PriorityBasedPacketManagerService {
         request.setVersion(VERSION);
         request.setRequesttime(DateUtils.getUTCCurrentDateTime());
         request.setRequest(updateTagRequestDto);
+        long startTime = System.currentTimeMillis();
         ResponseWrapper<Void> response = (ResponseWrapper) restApi.postApi(ApiName.PACKETMANAGER_UPDATE_TAGS, "", "", request, ResponseWrapper.class);
+        regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+                LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+                "Time taken for PacketManagerService.addOrUpdateTags addOrUpdateTags API for rid - " + id + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 
         if (response.getErrors() != null && response.getErrors().size() > 0) {
             regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id, JsonUtils.javaObjectToJsonString(response));
@@ -305,9 +341,13 @@ public class PacketManagerService extends PriorityBasedPacketManagerService {
 		request.setVersion(VERSION);
 		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
 		request.setRequest(deleteTagREquestDto);
+        long startTime = System.currentTimeMillis();
 		ResponseWrapper<DeleteTagResponseDTO> response = (ResponseWrapper<DeleteTagResponseDTO>) restApi
 				.postApi(ApiName.PACKETMANAGER_DELETE_TAGS, "", "",
 				request, ResponseWrapper.class);
+        regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+                LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+                "Time taken for PacketManagerService.deleteTags deleteTags API for rid - " + id + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 
 		if (response.getErrors() != null && response.getErrors().size() > 0) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -333,9 +373,13 @@ public class PacketManagerService extends PriorityBasedPacketManagerService {
         request.setVersion(VERSION);
         request.setRequesttime(DateUtils.getUTCCurrentDateTime());
         request.setRequest(tagRequestDto);
+        long startTime = System.currentTimeMillis();
         ResponseWrapper<TagResponseDto> response = (ResponseWrapper<TagResponseDto>) restApi
                 .postApi(ApiName.PACKETMANAGER_GET_TAGS, "", "",
                         request, ResponseWrapper.class);
+        regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+                LoggerFileConstant.REGISTRATIONID.toString(), "PacketValidatorStage",
+                "Time taken for PacketManagerService.getTags getTags API for rid - " + id + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 
         if (response.getErrors() != null && response.getErrors().size() > 0) {
         	ErrorDTO error=response.getErrors().get(0);

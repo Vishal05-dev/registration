@@ -215,6 +215,7 @@ public class SecurezoneNotificationStage extends MosipVerticleAPIManager {
 		TrimExceptionMessage trimMessage = new TrimExceptionMessage();
 		LogDescription description = new LogDescription();
 		boolean isTransactionSuccessful = false;
+		long startTime = System.currentTimeMillis();
 		try {
 			registrationStatusDto = registrationStatusService.getRegistrationStatus(messageDTO.getRid(),
 					messageDTO.getReg_type(), messageDTO.getIteration(), messageDTO.getWorkflowInstanceId());
@@ -224,7 +225,11 @@ public class SecurezoneNotificationStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setLatestTransactionTypeCode(
 						RegistrationTransactionTypeCode.SECUREZONE_NOTIFICATION.toString());
 				registrationStatusDto.setRegistrationStageName(getStageName());
+				long dupStartTime = System.currentTimeMillis();
 				isDuplicatePacket = isDuplicatePacketForSameReqId(messageDTO);
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "SecurezoneNotificationStage",
+						"Time taken for duplicate check - " + messageDTO.getRid() + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 			} else {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), messageDTO.getRid(),
@@ -312,6 +317,9 @@ public class SecurezoneNotificationStage extends MosipVerticleAPIManager {
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					moduleId, moduleName, messageDTO.getRid());
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), "SecurezoneNotificationStage",
+					"Time taken to complete overall steps - " + messageDTO.getRid() + " - " + (System.currentTimeMillis() - startTime) + " (ms)");
 		}
 		return messageDTO;
 	}
