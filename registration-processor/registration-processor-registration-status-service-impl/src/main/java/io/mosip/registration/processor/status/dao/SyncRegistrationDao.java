@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.status.dao;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -64,6 +65,8 @@ public class SyncRegistrationDao {
 
 	/** The Constant ISDELETED_COLON. */
 	public static final String ISDELETED_COLON = ".isDeleted=:";
+
+	public static final String REGISTRATION_DATE = "registrationDate";
 
 
 	/**
@@ -181,10 +184,21 @@ public class SyncRegistrationDao {
 			while (searchIterator.hasNext()) {
 				FilterInfo filterInfo = searchIterator.next();
 				if (filterInfo.getType().equalsIgnoreCase("between")) {
-					sb.append(EMPTY_STRING + AND + EMPTY_STRING + alias + "." + filterInfo.getColumnName()
-							+ EMPTY_STRING + BETWEEN + "'" + filterInfo.getFromValue() + "'" + EMPTY_STRING + AND
-							+ EMPTY_STRING + "'" + filterInfo.getToValue() + "'");
+					String fromParam = filterInfo.getColumnName() + "_from";
+					String toParam = filterInfo.getColumnName() + "_to";
 
+					sb.append(EMPTY_STRING + AND + EMPTY_STRING + alias + "." + filterInfo.getColumnName()
+							+ " BETWEEN :" + fromParam + " AND :" + toParam);
+
+					if (REGISTRATION_DATE.equals(filterInfo.getColumnName())) {
+						params.put(fromParam,
+								LocalDate.parse(filterInfo.getFromValue()));
+						params.put(toParam,
+								LocalDate.parse(filterInfo.getToValue()));
+					} else {
+						params.put(fromParam, filterInfo.getFromValue());
+						params.put(toParam, filterInfo.getToValue());
+					}
 				} else {
 					sb.append(EMPTY_STRING + AND + EMPTY_STRING + alias + "." + filterInfo.getColumnName() + "=:"
 							+ filterInfo.getColumnName());
